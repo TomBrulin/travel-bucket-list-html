@@ -24,7 +24,8 @@ app.use(express.json());
 /*
 Routes
 */
-app.use('/', (req, res) => console.log('test'));
+const bucketRoutes = require('./routes/bucket')
+app.use('/buckets', bucketRoutes);
 
 
 module.exports = app;
