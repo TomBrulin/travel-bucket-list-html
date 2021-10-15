@@ -28,7 +28,7 @@ Ajouter une ville dans la base de données
 */
 let addform = document.getElementById('addform');
 
-addform.addEventListener('submit', (e) => {
+addform.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     /* 
@@ -36,10 +36,38 @@ addform.addEventListener('submit', (e) => {
     */
     let form = document.forms.addform;
     let city = form.city.value;
+    let country = form.country.value;
+    let year = form.year.value;
+    let duration = form.duration.value;
+
+    const selectUnit = document.getElementById('unit')
+    let unit = selectUnit.options[selectUnit.selectedIndex].text;
     // ...
 
-    console.log(form);
-    console.log(city);
+    if (city == '' || country == '' || year == '' || duration == '')
+    {
+        alert("Veuillez saisir tous les champs");
+        return;
+    }
+
+    const requestBody = {
+        "city": city,
+        "country": country,
+        "year": year,
+        "duration": duration,
+        "unit": unit
+    }
+
+    const resp = await fetch(`${server}/buckets`, {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(requestBody)
+    })
+    const createdBucket = await resp.json();
+    cities.push(createdBucket);
 
     renderCities();
 })
@@ -48,8 +76,23 @@ addform.addEventListener('submit', (e) => {
 TODO 3: 
 Supprimer un élément au clic sur "Delete"
 */
-function deleteItem() {
+function deleteItem(e) {
+    const bucketId = e.target.id;
 
+    fetch(`${server}/buckets/${bucketId}`, {
+        method: 'DELETE',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+    })
+
+    for (let [i, bucket] of cities.entries()) {
+        if (bucket._id == bucketId)
+            cities.splice(i, 1)
+    }
+
+    renderCities()
 }
 
 /*
@@ -99,6 +142,7 @@ function renderCities() {
 
         // Création du bouton d'ajout
         let addToWishList = document.createElement('button');
+        addToWishList.id = cities[i]._id;
         addToWishList.setAttribute('class', 'btn btn-danger');
         addToWishList.innerText = 'Retirer'
         // Exécution de la fonction au clic

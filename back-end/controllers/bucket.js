@@ -3,10 +3,8 @@ const sBucket = require('../models/Bucket');
 exports.createBucket = (req, res, next) => {
     const bucket = new sBucket({...req.body})
 
-    bucket.save().then(() => {
-        res.status(201).json({
-            message: "Bucket crée"
-        })
+    bucket.save().then((bucket) => {
+        res.status(201).json(bucket)
     }).catch((error) => {
         res.status(400).json({error})
     })
