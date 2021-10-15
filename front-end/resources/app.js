@@ -1,16 +1,26 @@
+const server = 'http://localhost:3000';
 
 /*
 TODO: 1 
 Récupérer les villes visitées depuis la base de données
 Remplacer "cities" par le résultat du fetch
 */
-let cities = [{ "CountryName": "Somaliland", "CapitalName": "Hargeisa" }]
+let cities = [];
 
 /* 
 Mise à jour de l'affichage
 */
 
-renderCities();
+(async function() {
+    "use strict";
+  
+    const resp = await fetch(`${server}/buckets`)
+    const buckets = await resp.json(); 
+
+    cities.push(...buckets)
+
+    renderCities();
+})();
 
 /*
 TODO: 2 
@@ -72,11 +82,17 @@ function renderCities() {
 
         // Création du <td> contenant le nom de la ville
         let city = document.createElement('td');
-        let cityName = document.createTextNode(cities[i].CapitalName);
+        let cityName = document.createTextNode(cities[i].city);
 
         // Création du <td> contenant le nom du pays
         let country = document.createElement('td');
-        let countryName = document.createTextNode(cities[i].CountryName);
+        let countryName = document.createTextNode(cities[i].country);
+
+        let year = document.createElement('td');
+        let yearName = document.createTextNode(cities[i].year);
+
+        let duration = document.createElement('td');
+        let durationName = document.createTextNode(cities[i].duration + " " + cities[i].unit);
 
         // Création du <td> contenant le bouton d'ajout
         let action = document.createElement('td');
@@ -91,11 +107,15 @@ function renderCities() {
         //On ajoute les textNodes aux éléments <td> puis le bouton au <td> correspondant
         city.appendChild(cityName);
         country.appendChild(countryName);
+        year.appendChild(yearName);
+        duration.appendChild(durationName);
         action.appendChild(addToWishList);
 
         // On ajoute les <td> à la ligne <tr>
         tr.appendChild(city);
-        tr.appendChild(country)
+        tr.appendChild(country);
+        tr.appendChild(year);
+        tr.appendChild(duration);
         tr.appendChild(action);
 
         // On ajoute toute la ligne au tableau
