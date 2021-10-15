@@ -50,6 +50,11 @@ addform.addEventListener('submit', async (e) => {
         return;
     }
 
+    form.city.value = ''
+    form.country.value = ''
+    form.year.value = ''
+    form.duration.value = ''
+
     const requestBody = {
         "city": city,
         "country": country,
